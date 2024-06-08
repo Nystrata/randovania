@@ -184,10 +184,7 @@ def increment_considered_count(locations_weighted: WeightedLocations) -> None:
 
 def _print_header(player_states: list[PlayerState]) -> None:
     def _name_for_index(state: PlayerState, index: PickupIndex) -> str:
-        return state.game.region_list.node_name(
-            state.game.region_list.node_from_pickup_index(index),
-            with_region=True,
-        )
+        return str(state.world_graph.node_by_pickup_index[index].identifier)
 
     debug.debug_print(
         "{}\nRetcon filler started with standard pickups:\n{}".format(
@@ -269,7 +266,7 @@ def retcon_playthrough_filler(
         rng.shuffle(new_pickups)
 
         for new_resource in new_resources:
-            debug_print_collect_event(new_resource, current_player.game)
+            debug_print_collect_event(new_resource)
             # This action is potentially dangerous. Use `act_on` to remove invalid paths
             current_player.reach.act_on(new_resource)
 
@@ -307,6 +304,7 @@ def retcon_playthrough_filler(
 def debug_print_weighted_locations(all_locations_weighted: WeightedLocations, player_states: list[PlayerState]) -> None:
     print("==> Weighted Locations")
     for owner, index, weight in all_locations_weighted.all_items():
+        owner.world_graph.node_provider.node_by_identifier()
         node_name = owner.game.region_list.node_name(owner.game.region_list.node_from_pickup_index(index))
         print(f"[{player_states[owner.index].name}] {node_name} - {weight}")
 
@@ -370,7 +368,7 @@ def _assign_pickup_somewhere(
                 hint_location, Hint(HintType.LOCATION, None, pickup_index)
             )
 
-        if pickup_index in index_owner_state.reach.state.collected_pickup_indices:
+        if pickup_index in index_owner_state.reach.state.collected_pickup_indices(index_owner_state.world_graph):
             current_player.reach.advance_to(current_player.reach.state.assign_pickup_resources(action))
         else:
             # FIXME: isn't that condition always true?
@@ -485,21 +483,17 @@ def pickup_placement_spoiler_entry(
     index_owner: PlayerState,
     add_indices: bool,
 ) -> str:
-    region_list = index_owner.game.region_list
+    node_provider = index_owner.world_graph.node_provider
     if hint_identifier is not None:
-        hint_string = " with hint at {}".format(
-            region_list.node_name(
-                region_list.node_by_identifier(hint_identifier), with_region=True, distinguish_dark_aether=True
-            )
-        )
+        hint_string = f" with hint at {node_provider.node_by_identifier(hint_identifier).identifier}"
     else:
         hint_string = ""
 
-    pickup_node = region_list.node_from_pickup_index(pickup_index)
+    pickup_node = index_owner.world_graph.node_by_pickup_index[pickup_index]
     return "{}{} at {}{}{}".format(
         f"{location_owner.name}'s " if add_indices else "",
         action.name,
         f"{index_owner.name}'s " if add_indices else "",
-        region_list.node_name(pickup_node, with_region=True, distinguish_dark_aether=True),
+        pickup_node.identifier,
         hint_string,
     )

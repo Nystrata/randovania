@@ -2,13 +2,13 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from randovania.game_description.db.resource_node import ResourceNode
 from randovania.game_description.pickup.pickup_entry import PickupEntry
+from randovania.graph.world_graph import WorldGraphNode
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
 
-ActionStep = ResourceNode | PickupEntry
+ActionStep = WorldGraphNode | PickupEntry
 
 
 class Action:
@@ -32,7 +32,7 @@ class Action:
     def num_steps(self) -> int:
         return len(self.steps)
 
-    def split_pickups(self) -> tuple[list[ResourceNode], list[PickupEntry]]:
+    def split_pickups(self) -> tuple[list[WorldGraphNode], list[PickupEntry]]:
         pickups = []
         resources = []
         for step in self.steps:
