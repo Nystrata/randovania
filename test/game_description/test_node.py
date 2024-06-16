@@ -60,12 +60,12 @@ def test_logbook_node_can_collect(logbook_node, empty_patches):
         resources = ResourceCollection.from_dict(db, {r: 1 for r in args})
         return NodeContext(empty_patches, resources, db, node_provider)
 
-    assert node.can_collect(ctx()) != has_translator
-    assert node.can_collect(ctx(translator))
+    assert node.should_collect(ctx()) != has_translator
+    assert node.should_collect(ctx(translator))
 
     resource = node.resource(ctx())
-    assert not node.can_collect(ctx(resource))
-    assert not node.can_collect(ctx(resource, translator))
+    assert not node.should_collect(ctx(resource))
+    assert not node.should_collect(ctx(resource, translator))
 
 
 def test_logbook_node_resource_gain_on_collect(logbook_node, empty_patches):
