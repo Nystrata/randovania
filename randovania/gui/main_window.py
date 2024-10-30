@@ -305,6 +305,7 @@ class MainWindow(WindowManager, BackgroundTaskMixin, Ui_MainWindow):
         self.menu_action_about.triggered.connect(self._on_menu_action_about)
         self.menu_action_dependencies.triggered.connect(self._on_menu_action_dependencies)
         self.menu_action_automatic_reporting.triggered.connect(self._on_menu_action_automatic_reporting)
+        self.menu_action_game_connections.triggered.connect(self.open_game_connection_window)
 
         # Setting this event only now, so all options changed trigger only once
         options.on_options_changed = self.options_changed_signal.emit

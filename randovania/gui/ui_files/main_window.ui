@@ -30,7 +30,7 @@
     <item>
      <widget class="QTabWidget" name="main_tab_widget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>4</number>
       </property>
       <widget class="QWidget" name="tab_welcome">
        <attribute name="title">
@@ -127,7 +127,6 @@
           <property name="font">
            <font>
             <pointsize>14</pointsize>
-            <weight>75</weight>
             <bold>true</bold>
            </font>
           </property>
@@ -141,7 +140,6 @@
           <property name="font">
            <font>
             <pointsize>12</pointsize>
-            <weight>75</weight>
             <bold>true</bold>
            </font>
           </property>
@@ -181,7 +179,6 @@
           <property name="font">
            <font>
             <pointsize>12</pointsize>
-            <weight>75</weight>
             <bold>true</bold>
            </font>
           </property>
@@ -220,8 +217,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>670</width>
-          <height>392</height>
+          <width>664</width>
+          <height>411</height>
          </rect>
         </property>
        </widget>
@@ -467,7 +464,7 @@ For more information, check [Randovania Help](help://tab_multiworld)!</string>
      <x>0</x>
      <y>0</y>
      <width>688</width>
-     <height>30</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_open">
@@ -517,8 +514,10 @@ For more information, check [Randovania Help](help://tab_multiworld)!</string>
     <addaction name="menu_action_experimental_settings"/>
     <addaction name="menu_action_automatic_reporting"/>
     <addaction name="separator"/>
+    <addaction name="menu_action_game_connections"/>
     <addaction name="separator"/>
     <addaction name="menu_advanced"/>
+    <addaction name="separator"/>
    </widget>
    <widget class="QMenu" name="menu_help">
     <property name="title">
@@ -651,6 +650,17 @@ For more information, check [Randovania Help](help://tab_multiworld)!</string>
   <action name="menu_action_verify_installation">
    <property name="text">
     <string>Verify installation</string>
+   </property>
+  </action>
+  <action name="menu_action_game_connections">
+   <property name="text">
+    <string>Game Connections</string>
+   </property>
+   <property name="toolTip">
+    <string>Game Connections</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::NoRole</enum>
    </property>
   </action>
  </widget>
