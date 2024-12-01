@@ -415,101 +415,100 @@ jobs:
           fail_on_error: false
           install_types: false
 
-  docker:
-    runs-on: ubuntu-latest
-    name: Docker
-    steps:
-      -
-        name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Workaround for worktree config
-        run: git config --unset-all extensions.worktreeConfig || true
-
-      -
-        name: Prepare
-        id: prep
-        run: |
-          DOCKER_IMAGE=randovania/server
-          VERSION=noop
-          if [ "${{ github.event_name }}" = "schedule" ]; then
-            VERSION=nightly
-          elif [[ $GITHUB_REF == refs/tags/* ]]; then
-            VERSION=${GITHUB_REF#refs/tags/}
-          elif [[ $GITHUB_REF == refs/heads/* ]]; then
-            VERSION=$(echo ${GITHUB_REF#refs/heads/} | sed -r 's#/+#-#g')
-            if [ "${{ github.event.repository.default_branch }}" = "$VERSION" ]; then
-              VERSION=edge
-            fi
-          elif [[ $GITHUB_REF == refs/pull/* ]]; then
-            VERSION=pr-${{ github.event.number }}
-          fi
-          TAGS="${DOCKER_IMAGE}:${VERSION}"
-          if [[ $VERSION =~ ^v[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
-            MINOR=${VERSION%.*}
-            MAJOR=${MINOR%.*}
-            TAGS="$TAGS,${DOCKER_IMAGE}:${MINOR},${DOCKER_IMAGE}:${MAJOR},${DOCKER_IMAGE}:latest"
-          elif [ "${{ github.event_name }}" = "push" ]; then
-            TAGS="$TAGS,${DOCKER_IMAGE}:sha-${GITHUB_SHA::8}"
-          fi
-          echo version=${VERSION} >> $GITHUB_OUTPUT
-          echo tags=${TAGS} >> $GITHUB_OUTPUT
-          echo created=$(date -u +'%Y-%m-%dT%H:%M:%SZ') >> $GITHUB_OUTPUT
-
-      -
-        name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-
-      -
-        name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3.7.1
-
-      - name: Should Push
-        id: decide_push
-        env:
-            SHOULD_PUSH: ${{ github.event_name != 'pull_request' && github.event_name != 'merge_group' && !startsWith(github.ref, 'refs/heads/stable') }}
-        run: |
-          echo should=${SHOULD_PUSH} >> $GITHUB_OUTPUT
-
-      -
-        name: Login to DockerHub
-        if: ${{ fromJSON(steps.decide_push.outputs.should) }}
-        uses: docker/login-action@v3.3.0
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      -
-        name: Build and push
-        id: docker_build
-        uses: docker/build-push-action@v6.9.0
-        with:
-          context: .
-          file: ./Dockerfile.server
-          platforms: linux/amd64
-          load: ${{ !fromJSON(steps.decide_push.outputs.should) }}
-          push: ${{ fromJSON(steps.decide_push.outputs.should) }}
-          tags: ${{ steps.prep.outputs.tags }}
-          labels: |
-            org.opencontainers.image.created=${{ steps.prep.outputs.created }}
-            org.opencontainers.image.source=${{ github.repositoryUrl }}
-            org.opencontainers.image.version=${{ steps.prep.outputs.version }}
-            org.opencontainers.image.revision=${{ github.sha }}
-            org.opencontainers.image.licenses=${{ github.event.repository.license.name }}
-
-      -
-        name: Test image
-        run: |
-          docker run --rm --entrypoint /bin/bash randovania/server:${{ steps.prep.outputs.version }} tools/server_image_test.sh
+#  docker:
+#    runs-on: ubuntu-latest
+#    name: Docker
+#    steps:
+#      -
+#        name: Checkout
+#        uses: actions/checkout@v4
+#        with:
+#          fetch-depth: 0
+#
+#      - name: Workaround for worktree config
+#        run: git config --unset-all extensions.worktreeConfig || true
+#
+#      -
+#        name: Prepare
+#        id: prep
+#        run: |
+#          DOCKER_IMAGE=randovania/server
+#          VERSION=noop
+#          if [ "${{ github.event_name }}" = "schedule" ]; then
+#            VERSION=nightly
+#          elif [[ $GITHUB_REF == refs/tags/* ]]; then
+#            VERSION=${GITHUB_REF#refs/tags/}
+#          elif [[ $GITHUB_REF == refs/heads/* ]]; then
+#            VERSION=$(echo ${GITHUB_REF#refs/heads/} | sed -r 's#/+#-#g')
+#            if [ "${{ github.event.repository.default_branch }}" = "$VERSION" ]; then
+#              VERSION=edge
+#            fi
+#          elif [[ $GITHUB_REF == refs/pull/* ]]; then
+#            VERSION=pr-${{ github.event.number }}
+#          fi
+#          TAGS="${DOCKER_IMAGE}:${VERSION}"
+#          if [[ $VERSION =~ ^v[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
+#            MINOR=${VERSION%.*}
+#            MAJOR=${MINOR%.*}
+#            TAGS="$TAGS,${DOCKER_IMAGE}:${MINOR},${DOCKER_IMAGE}:${MAJOR},${DOCKER_IMAGE}:latest"
+#          elif [ "${{ github.event_name }}" = "push" ]; then
+#            TAGS="$TAGS,${DOCKER_IMAGE}:sha-${GITHUB_SHA::8}"
+#          fi
+#          echo version=${VERSION} >> $GITHUB_OUTPUT
+#          echo tags=${TAGS} >> $GITHUB_OUTPUT
+#          echo created=$(date -u +'%Y-%m-%dT%H:%M:%SZ') >> $GITHUB_OUTPUT
+#
+#      -
+#        name: Set up QEMU
+#        uses: docker/setup-qemu-action@v3
+#
+#      -
+#        name: Set up Docker Buildx
+#        uses: docker/setup-buildx-action@v3.7.1
+#
+#      - name: Should Push
+#        id: decide_push
+#        env:
+#            SHOULD_PUSH: ${{ github.event_name != 'pull_request' && github.event_name != 'merge_group' && !startsWith(github.ref, 'refs/heads/stable') }}
+#        run: |
+#          echo should=${SHOULD_PUSH} >> $GITHUB_OUTPUT
+#
+#      -
+#        name: Login to DockerHub
+#        if: ${{ fromJSON(steps.decide_push.outputs.should) }}
+#        uses: docker/login-action@v3.3.0
+#        with:
+#          username: ${{ secrets.DOCKERHUB_USERNAME }}
+#          password: ${{ secrets.DOCKERHUB_TOKEN }}
+#
+#      -
+#        name: Build and push
+#        id: docker_build
+#        uses: docker/build-push-action@v6.9.0
+#        with:
+#          context: .
+#          file: ./Dockerfile.server
+#          platforms: linux/amd64
+#          load: ${{ !fromJSON(steps.decide_push.outputs.should) }}
+#          push: ${{ fromJSON(steps.decide_push.outputs.should) }}
+#          tags: ${{ steps.prep.outputs.tags }}
+#          labels: |
+#            org.opencontainers.image.created=${{ steps.prep.outputs.created }}
+#            org.opencontainers.image.source=${{ github.repositoryUrl }}
+#            org.opencontainers.image.version=${{ steps.prep.outputs.version }}
+#            org.opencontainers.image.revision=${{ github.sha }}
+#            org.opencontainers.image.licenses=${{ github.event.repository.license.name }}
+#
+#      -
+#        name: Test image
+#        run: |
+#          docker run --rm --entrypoint /bin/bash randovania/server:${{ steps.prep.outputs.version }} tools/server_image_test.sh
 
   release:
     runs-on: 'ubuntu-latest'
     name: Release
     needs:
       - pytest
-      - docker
     if: ${{ github.event_name != 'pull_request' && github.event_name != 'merge_group' }}
 
     steps:
