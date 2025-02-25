@@ -9,16 +9,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Major** - Added: Featural Hints. Echoes and Cave Story now use a brand new hint system, where hints may refer to various Features of a pickup or of a location. Read the complete changelog for more details.
 - **Major** - Changed: Hints are now placed after pickup placement, rather than during. This should result in more interesting hints in all games.
+- **Major** - Added: Co-op as an additional Multiworld Mode. In Co-op, multiple people can share Worlds together, which means that they will share their inventory. This works for all games that support Multiworld.
 - Added: Every game now has a "Pickup Hint Features" tab where you can view which Features apply to which pickups.
 - Added: Cave Story and Echoes now have a "Pickup Location Features" tab where you can view which Features apply to which locations.
 - Added: Location Features can be viewed in the Database Viewer.
-- Fixed: It is now properly impossible for multiple hints to point to the same location.
-- Fixed: A recent regression in the resolver that made it significantly slower has been fixed.
+- Added: 3 more joke hints.
 - Added: The Hints Spoiler tab now indicates which location a hint is pointing to.
 - Changed: The Hints Spoiler tab sorts its entries in a more helpful manner.
+- Changed: Some joke hints are now shared between all games that use them.
+- Fixed: It is now properly impossible for multiple hints to point to the same location.
+- Fixed: A recent regression in the resolver that made it significantly slower has been fixed.
 
 ### Metroid Dread
 
+- Fixed: GUI formatting on the game page.
 - Fixed: Starter Preset now has a proper description.
 
 #### Logic Database
@@ -55,6 +59,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Changed: Reaching the tunnel at the top of Central Unit Access with Spin Boost now requires Movement (Beginner), but remains trickless with Space Jump.
 
+### Metroid Prime
+
+#### Logic Database
+
+##### Phazon Mines
+
+- Fixed: Metroid Quarantine A: Getting the Missile Expansion via using the Spider Ball Track now requires Morph Ball.
+- Fixed: Ore Processing: Getting from Door to Elevator Access A to Door to Storage Depot B via Power Bombs, Space Jump and L-Jumps now requires Morph Ball.
+
 ### Metroid Prime 2: Echoes
 - Removed: Relative hints will no longer be placed.
 - Changed: Legacy multiworld sessions where an Echoes hint points to a Cave Story item may have very slightly altered wording.
@@ -72,9 +85,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fixed: Starting in Spazer Beam Chamber now places Samus in the correct room.
 
+#### Area 4 Crystal Mines
+
+- Fixed: Renamed the room "Gamma Arena" to "Gamma+ Arena".
+- Fixed: The Gamma+ Metroid being classified as a Gamma Metroid, thus having the wrong requirements.
+
 #### Area 5 Tower Exterior
 
 - Fixed: Starting in Screw Attack Chamber or Zeta Arena Access now places Samus in the correct room.
+
+##### Area 5 Tower Interior
+
+- Fixed: Grapple Shuffler - Coming back up from the pickup if it was reached via a Melee Clip.
 
 ## [8.9.0] - 2025-02-02
 
